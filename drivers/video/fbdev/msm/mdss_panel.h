@@ -281,6 +281,7 @@ enum mdss_intf_events {
 	MDSS_EVENT_PANEL_TIMING_SWITCH,
 	MDSS_EVENT_UPDATE_PARAMS,
 	MDSS_EVENT_MAX,
+	MDSS_EVENT_UPDATE_LIVEDISPLAY,
 };
 
 struct lcd_panel_info {
@@ -616,6 +617,52 @@ struct mdss_panel_roi_alignment {
 	u32 min_height;
 };
 
+
+/*
+ * Nomeclature used to represent partial ROI in case of
+ * dual roi when the panel supports it. Region marked (XXX) is
+ * the extended roi to align with the second roi since LM output
+ * has to be rectangle.
+ *
+ * For single ROI, only the first ROI will be used in the struct.
+ * DSI driver will merge it based on the partial_update_roi_merge
+ * property.
+ *
+ * -------------------------------
+ * |   DSI0       |    DSI1      |
+ * -------------------------------
+ * |              |              |
+ * |              |              |
+ * |     =========|=======----+  |
+ * |     |        |      |XXXX|  |
+ * |     |   First| Roi  |XXXX|  |
+ * |     |        |      |XXXX|  |
+ * |     =========|=======----+  |
+ * |              |              |
+ * |              |              |
+ * |              |              |
+ * |     +----=================  |
+ * |     |XXXX|   |           |  |
+ * |     |XXXX| Second Roi    |  |
+ * |     |XXXX|   |           |  |
+ * |     +----====|============  |
+ * |              |              |
+ * |              |              |
+ * |              |              |
+ * |              |              |
+ * |              |              |
+ * ------------------------------
+ *
+ */
+
+struct mdss_dsi_dual_pu_roi {
+	struct mdss_rect first_roi;
+	struct mdss_rect second_roi;
+	bool enabled;
+};
+
+struct mdss_livedisplay_ctx;
+
 struct mdss_panel_hdr_properties {
 	bool hdr_enabled;
 
@@ -767,6 +814,8 @@ struct mdss_panel_info {
 	 * configuring the event timer wakeup logic.
 	 */
 	u32 adjust_timer_delay_ms;
+
+	struct mdss_livedisplay_ctx *livedisplay;
 
 	/* debugfs structure for the panel */
 	struct mdss_panel_debugfs_info *debugfs_info;
