@@ -1877,3 +1877,5 @@ FORCE:
 .PHONY: $(PHONY)
 
 HOSTLDFLAGS += $(HOST_LFS_LDFLAGS)
+HOSTLDFLAGS	+= -fuse-ld=lld
+HOSTCFLAGS	+= -fuse-ld=lld
