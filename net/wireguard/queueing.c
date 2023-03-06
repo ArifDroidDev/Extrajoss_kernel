@@ -41,7 +41,7 @@ int wg_packet_queue_init(struct crypt_queue *queue, work_func_t function,
 
 void wg_packet_queue_free(struct crypt_queue *queue)
 {
-	free_percpu(queue->worker)
+	free_percpu(queue->worker);
 }
 
 #define NEXT(skb) ((skb)->prev)
