@@ -1,10 +1,17 @@
 /*
- * Copyright (C) 2014 NXP Semiconductors, All Rights Reserved.
+ * Copyright 2014-2017 NXP Semiconductors
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2 as
- * published by the Free Software Foundation.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 #ifndef TFA98XX_INTERNALS_H
@@ -13,7 +20,9 @@
 #include "config.h"
 
 #include "tfa_service.h"  //TODO cleanup for enum Tfa98xx_Status_ID
-
+/*
+ * tfadsp_fw_api.c
+ */
 /**
  * Return a text version of the firmware status ID code
  * @param status the given status ID code
@@ -25,7 +34,7 @@ int tfadsp_fw_get_api_version(struct tfa_device *tfa, uint8_t *buffer);
 #define FW_MAXTAG 150
 int tfadsp_fw_get_tag(struct tfa_device *tfa, uint8_t *buffer);
 int tfadsp_fw_get_status_change(struct tfa_device *tfa, uint8_t *buffer);
-int tfadsp_fw_set_re25(struct tfa_device *tfa, int prim, int sec);
+int tfadsp_fw_set_re25(struct tfa_device *tfa, int prim, int sec );
 int tfadsp_fw_get_re25(struct tfa_device *tfa, uint8_t *buffer);
 
 /*
@@ -135,7 +144,7 @@ enum tfa_fw_event { /* not all available on each device */
 #define TFA2_MAX_PARAM_SIZE (507*3) /* TFA2 */
 #define TFA1_MAX_PARAM_SIZE (145*3) /* TFA1 */
 
-#define ROUND_DOWN(a, n) (((a)/(n))*(n))
+#define ROUND_DOWN(a,n) (((a)/(n))*(n))
 
 /* feature bits */
 #define FEATURE1_TCOEF 0x100 /* bit8 set means tCoefA expected */
@@ -149,9 +158,9 @@ enum tfa_fw_event { /* not all available on each device */
 #define TFA2_FW_XMEM_CMD_COUNT			520
 
 /* note that the following defs rely on the handle variable */
-#define TFA_FW_XMEM_CALIBRATION_DONE 	TFA_FAM_FW(tfa, XMEM_CALIBRATION_DONE)
-#define TFA_FW_XMEM_COUNT_BOOT 			TFA_FAM_FW(tfa, XMEM_COUNT_BOOT)
-#define TFA_FW_XMEM_CMD_COUNT 			TFA_FAM_FW(tfa, XMEM_CMD_COUNT)
+#define TFA_FW_XMEM_CALIBRATION_DONE 	TFA_FAM_FW(tfa,XMEM_CALIBRATION_DONE)
+#define TFA_FW_XMEM_COUNT_BOOT 			TFA_FAM_FW(tfa,XMEM_COUNT_BOOT)
+#define TFA_FW_XMEM_CMD_COUNT 			TFA_FAM_FW(tfa,XMEM_CMD_COUNT)
 
 #define TFA2_FW_ReZ_SCALE	65536
 #define TFA1_FW_ReZ_SCALE	16384
