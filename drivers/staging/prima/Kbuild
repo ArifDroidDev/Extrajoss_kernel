@@ -19,6 +19,12 @@ CONFIG_PRIMA_WLAN_BTAMP := n
 # Flag to enable Legacy Fast Roaming(LFR)
 CONFIG_PRIMA_WLAN_LFR := y
 
+# Flag to enable SAE
+CONFIG_WLAN_FEATURE_SAE := y
+
+# Flag to enable OWE
+CONFIG_WLAN_AKM_SUITE_OWE := y
+
 # Flag to enable Legacy Fast Roaming(LFR) Make Before Break
 CONFIG_PRIMA_WLAN_LFR_MBB := y
 
@@ -67,16 +73,18 @@ CONFIG_QCOM_ESE_UPLOAD := y
 endif
 endif
 
+# Feature flags which are not (currently) configurable via Kconfig
+
 # Whether to build debug version
 BUILD_DEBUG_VERSION := 0
 
-# Enable this flag to build driver in diag version
+#Enable this flag to build driver in diag version
 BUILD_DIAG_VERSION := 1
 
-# Do we panic on bug?  default is to warn
-PANIC_ON_BUG := 1
+#Do we panic on bug?  default is to warn
+PANIC_ON_BUG := 0
 
-# Re-enable wifi on WDI timeout
+#Re-enable wifi on WDI timeout
 RE_ENABLE_WIFI_ON_WDI_TIMEOUT := 0
 
 ifeq ($(CONFIG_CFG80211),y)
@@ -101,9 +109,13 @@ else
 endif # ANDROID_BUILD_TOP
 else
 ifneq ($(ANDROID_BUILD_TOP),)
-    WLAN_BLD_DIR := $(ANDROID_BUILD_TOP)/device/qcom/msm8909w/opensource/wlan
+ifeq ($(TARGET_PRODUCT),sdm429w)
+    WLAN_BLD_DIR := $(ANDROID_BUILD_TOP)/$(BOARD_OPENSOURCE_DIR)/wlan
 else
-    WLAN_BLD_DIR := device/qcom/msm8909w/opensource/wlan
+    WLAN_BLD_DIR := $(ANDROID_BUILD_TOP)/vendor/qcom/opensource/wlan
+endif #TARGET_PRODUCT
+else
+    WLAN_BLD_DIR := $(BOARD_OPENSOURCE_DIR)/wlan
 endif # ANDROID_BUILD_TOP
 endif # TARGET_SUPPORTS_WEARABLES
 endif # WLAN_PROPRIETARY
@@ -682,6 +694,14 @@ ifeq ($(CONFIG_PRIMA_WLAN_LFR),y)
 CDEFINES += -DFEATURE_WLAN_LFR
 endif
 
+ifeq ($(CONFIG_WLAN_FEATURE_SAE),y)
+CDEFINES += -DWLAN_FEATURE_SAE
+endif
+
+ifeq ($(CONFIG_WLAN_AKM_SUITE_OWE),y)
+CDEFINES += -DWLAN_AKM_SUITE_OWE
+endif
+
 ifeq ($(CONFIG_PRIMA_WLAN_LFR_MBB),y)
 CDEFINES += -DWLAN_FEATURE_LFR_MBB
 endif
@@ -755,7 +775,7 @@ EXTRA_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
 
 # Silence Clang warning
 EXTRA_CFLAGS += $(call cc-disable-warning, enum-conversion)
-EXTRA_CFLAGS += $(call cc-option, -Wframe-larger-than=2048)
+EXTRA_CFLAGS += $(call cc-disable-warning, void-pointer-to-enum-cast)
 
 ifeq ($(CONFIG_WLAN_OFFLOAD_PACKETS),y)
 CDEFINES += -DWLAN_FEATURE_OFFLOAD_PACKETS

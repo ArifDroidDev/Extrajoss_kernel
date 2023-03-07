@@ -244,6 +244,8 @@ typedef struct sLimTimers
      */
     TX_TIMER           gLimActiveToPassiveChannelTimer;
     TX_TIMER           g_lim_ap_ecsa_timer;
+    /* SAE authentication related timer */
+    TX_TIMER           sae_auth_timer;
 //********************TIMER SECTION ENDS**************************************************
 // ALL THE FIELDS BELOW THIS CAN BE ZEROED OUT in limInitialize
 //****************************************************************************************
@@ -1110,6 +1112,7 @@ typedef struct sAniSirGlobal
    uint32_t sta_auth_retries_for_code17;
    uint32_t sta_sap_scc_on_dfs_chan;
    bool force_scc_with_ecsa;
+   bool require_h2e;
 } tAniSirGlobal;
 
 #ifdef FEATURE_WLAN_TDLS

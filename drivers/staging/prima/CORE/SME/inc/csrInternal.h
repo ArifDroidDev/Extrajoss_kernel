@@ -720,6 +720,7 @@ typedef struct tagCsrConfig
     tANI_BOOLEAN agg_btc_sco_enabled;
     tANI_U8 num_ba_buff_btc_sco;
     tANI_U8 num_ba_buff;
+    bool isPeriodicRoamScanEnabled;
 }tCsrConfig;
 
 typedef struct tagCsrChannelPowerInfo
@@ -1076,6 +1077,7 @@ typedef struct tagCsrRoamStruct
     tANI_U32 deauthRspStatus;
     tANI_BOOLEAN pending_roam_disable;
     vos_spin_lock_t roam_state_lock;
+    tSirMacAddr spoof_mac_addr;
 }tCsrRoamStruct;
 
 
