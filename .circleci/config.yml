@@ -1,0 +1,54 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      # Menggunakan Docker image khusus build Android
+      - image: nestingdev/hyper:latest
+    steps:
+      - checkout
+      
+      # Tahap install dependensi dihapus karena xdocker sudah punya semuanya!
+            
+      - run:
+          name: Clone Toolchain & AnyKernel3
+          command: |
+            git clone --depth=1 https://github.com/arifmndr17/Hyper-Clang -b master toolchain
+            git clone --depth=1 https://github.com/arifmndr17/AnyKernel3 -b master AK3
+            
+      - run:
+          name: Proses Kompilasi Kernel X01AD
+          command: |
+            export PATH="$PWD/toolchain/bin:$PATH"
+            export ARCH=arm64
+            export SUBARCH=arm64
+            
+            make O=out X01AD_defconfig 
+            make O=out -j$(nproc --all) CC=clang CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi-
+            
+      - run:
+          name: Pemaketan AnyKernel3 (Zip Flashable)
+          command: |
+            cp out/arch/arm64/boot/Image.gz-dtb AK3/
+            cd AK3
+            zip -r9 ../Flashable-Kernel-X01AD.zip * -x .git README.md *placeholder
+            
+      - run:
+          name: Kirim Hasil ke Telegram
+          command: |
+            if [ -f Flashable-Kernel-X01AD.zip ]; then
+              echo "Mengirim file ke Telegram..."
+              curl -F chat_id="${TELEGRAM_CHAT_ID}" \
+                   -F document=@"Flashable-Kernel-X01AD.zip" \
+                   -F caption="✅ Build Kernel Berhasil!
+            
+            📱 Perangkat: Asus Zenfone Max M2 (X01AD)
+            ⏰ Waktu: $(date '+%Y-%m-%d %H:%M:%S')" \
+                   https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendDocument
+            else
+              echo "Error: File zip gagal dibuat!"
+              exit 1
+            fi
+            
+      - store_artifacts:
+          path: Flashable-Kernel-X01AD.zip
+          destination: Kernel-Build
